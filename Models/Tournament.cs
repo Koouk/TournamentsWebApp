@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TournamentsWebApp.Services;
 
 namespace TournamentsWebApp.Models
 {
@@ -14,11 +15,14 @@ namespace TournamentsWebApp.Models
         public string Name { get; set; }
 
         [Required]
+        [CheckDateRangeAttribute]
         [Display(Name = "Starting Date")]
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
 
         [Required]
+        [DateLessThan("StartDate")]
+        [CheckDateRangeAttribute]
         [Display(Name = "Entry Deadline")]
         [DataType(DataType.Date)]
         public DateTime Deadline { get; set; }
