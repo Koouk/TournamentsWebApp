@@ -233,14 +233,58 @@ namespace TournamentsWebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(int id)
         {
-            
-
+            var userID = _userManager.GetUserId(User);
+            var count = (from row in _context.Enrollments
+                         where userID == row.ApplicationUserID && id == row.TournamentID
+                         select row).Count();
+            if(count > 0)
+                return RedirectToAction(nameof(Index));
             return View();
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("TournamentID,Ranking,LicenceNumber")] TournamentEnrollment enrollment)
+        {
 
+            if (ModelState.IsValid)
+            {
+
+                var userID = _userManager.GetUserId(User);
+                var count = (from row in _context.Enrollments
+                             where userID == row.ApplicationUserID && enrollment.TournamentID == row.TournamentID
+                             select row).Count();
+                if (count > 0)
+                    return RedirectToAction(nameof(Index));
+
+                enrollment.ApplicationUserID = userID;
+                var canAdd = false;
+                lock(partLock)
+                {
+                    var tournament =  _context.Tournament.Include(m => m.Owner).FirstOrDefault(m => m.ID == enrollment.TournamentID);
+                    if(tournament.maxPart - tournament.currentPart > 0)
+                    {
+                        canAdd = true;
+                        tournament.currentPart += 1;
+                        _context.Update(tournament);
+                        _context.SaveChanges();
+                    }
+                }
+                if(canAdd == true)
+                {
+                    _context.Add(enrollment);
+                    await _context.SaveChangesAsync();
+                }
+                //TODO KOMUNIKAT
+                
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(enrollment);
+        }
 
         private bool TournamentExists(int id)
         {
