@@ -14,5 +14,9 @@ namespace TournamentsWebApp.Data
         {
         }
         public DbSet<TournamentsWebApp.Models.Tournament> Tournament { get; set; }
+        public DbSet<TournamentsWebApp.Models.Logo> Logos { get; set; }
+        public DbSet<TournamentsWebApp.Models.TournamentEnrollment> Enrollments { get; set; }
+
+
     }
 }

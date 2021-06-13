@@ -12,5 +12,9 @@ namespace TournamentsWebApp.Models
         public string FirstName { get; set; }
 
         public string Surname { get; set; }
+
+        public ICollection<Tournament> tournaments { get; set; }
+
+        public ICollection<TournamentEnrollment> Enrollments { get; set; }
     }
 }

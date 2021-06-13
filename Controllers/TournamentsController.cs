@@ -78,7 +78,7 @@ namespace TournamentsWebApp.Controllers
             }
 
             var tournament = await _context.Tournament
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (tournament == null)
             {
                 return NotFound();
@@ -132,7 +132,7 @@ namespace TournamentsWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate")] Tournament tournament)
         {
-            if (id != tournament.Id)
+            if (id != tournament.ID)
             {
                 return NotFound();
             }
@@ -146,7 +146,7 @@ namespace TournamentsWebApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TournamentExists(tournament.Id))
+                    if (!TournamentExists(tournament.ID))
                     {
                         return NotFound();
                     }
@@ -169,7 +169,7 @@ namespace TournamentsWebApp.Controllers
             }
 
             var tournament = await _context.Tournament
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (tournament == null)
             {
                 return NotFound();
@@ -191,7 +191,7 @@ namespace TournamentsWebApp.Controllers
 
         private bool TournamentExists(int id)
         {
-            return _context.Tournament.Any(e => e.Id == id);
+            return _context.Tournament.Any(e => e.ID == id);
         }
     }
 }
