@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Geocoding;
 using Geocoding.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -93,6 +94,7 @@ namespace TournamentsWebApp.Controllers
             return View(tournament);
         }
 
+        [Authorize]
         // GET: Tournaments/Create
         public IActionResult Create()
         {
@@ -102,6 +104,7 @@ namespace TournamentsWebApp.Controllers
         // POST: Tournaments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,StartDate,Deadline,Discipline,localization,maxPart")] Tournament tournament)
