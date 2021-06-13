@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TournamentsWebApp.Data;
+using TournamentsWebApp.Models;
 using TournamentsWebApp.Services;
 using WebPWrecover.Services;
 
@@ -39,7 +40,7 @@ namespace TournamentsWebApp
 
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection(
                                         AuthMessageSenderOptions.Name));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
         }

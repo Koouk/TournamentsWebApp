@@ -20,7 +20,7 @@ namespace TournamentsWebApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Tournaments");
         }
 
         public IActionResult Privacy()
