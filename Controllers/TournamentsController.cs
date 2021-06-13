@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Geocoding;
-using Geocoding.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TournamentsWebApp.Data;
 using TournamentsWebApp.Models;
+
 
 namespace TournamentsWebApp.Controllers
 {
@@ -19,9 +15,11 @@ namespace TournamentsWebApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuthorizationService _authorizationService;
         private readonly object partLock = new object();
-        public TournamentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TournamentsController(IAuthorizationService authorizationService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _authorizationService = authorizationService;
             _context = context;
             _userManager = userManager;
         }
@@ -84,8 +82,7 @@ namespace TournamentsWebApp.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.Tournament
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             if (tournament == null)
             {
                 return NotFound();
@@ -116,10 +113,12 @@ namespace TournamentsWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+           
             return View(tournament);
         }
 
         // GET: Tournaments1/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -127,17 +126,25 @@ namespace TournamentsWebApp.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.Tournament.FindAsync(id);
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             if (tournament == null)
             {
                 return NotFound();
             }
-            return View(tournament);
+
+            var userID = _userManager.GetUserId(User);
+            var ownerID = tournament.Owner.Id;
+            if (ownerID == userID)
+                return View(tournament);
+            else
+                return RedirectToAction(nameof(Index));
+
         }
 
         // POST: Tournaments1/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,StartDate,Deadline,Discipline,currentPart,localization,maxPart")] Tournament tournament)
@@ -147,8 +154,15 @@ namespace TournamentsWebApp.Controllers
                 return NotFound();
             }
 
-            var current = await _context.Tournament.FindAsync(id);
+            var current = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             _context.Entry(current).State = EntityState.Detached;
+            var userID = _userManager.GetUserId(User);
+            var ownerID = current.Owner.Id;
+            if (ownerID != userID)
+                return RedirectToAction(nameof(Index));
+
+
+
             lock (partLock)
             {
                 tournament.currentPart = current.currentPart;
@@ -178,6 +192,7 @@ namespace TournamentsWebApp.Controllers
         }
 
         // GET: Tournaments1/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -185,8 +200,13 @@ namespace TournamentsWebApp.Controllers
                 return NotFound();
             }
 
-            var tournament = await _context.Tournament
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
+
+            var userID = _userManager.GetUserId(User);
+            var ownerID = tournament.Owner.Id;
+            if (ownerID != userID)
+                return RedirectToAction(nameof(Index));
+
             if (tournament == null)
             {
                 return NotFound();
@@ -196,15 +216,31 @@ namespace TournamentsWebApp.Controllers
         }
 
         // POST: Tournaments1/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tournament = await _context.Tournament.FindAsync(id);
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
+
+            var userID = _userManager.GetUserId(User);
+            var ownerID = tournament.Owner.Id;
+            if (ownerID != userID)
+                return RedirectToAction(nameof(Index));
             _context.Tournament.Remove(tournament);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize]
+        public async Task<IActionResult> Register()
+        {
+            
+
+            return View();
+        }
+
+
 
         private bool TournamentExists(int id)
         {
