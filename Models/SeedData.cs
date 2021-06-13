@@ -44,7 +44,55 @@ namespace TournamentsWebApp.Models
 
                     new Tournament
                     {
-                        Name = "Rio Bravo",
+                        Name = "Rio ",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = " Bravo",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "Xd",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "Lol",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "No prosze",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "4",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "7",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "3457",
+                        StartDate = DateTime.Parse("1959-4-15"),
+
+                    },
+                    new Tournament
+                    {
+                        Name = "hfg",
                         StartDate = DateTime.Parse("1959-4-15"),
 
                     }

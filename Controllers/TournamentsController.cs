@@ -20,9 +20,53 @@ namespace TournamentsWebApp.Controllers
         }
 
         // GET: Tournaments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Tournament.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+
+            ViewData["NameSortParm"] = sortOrder == "name" ? "name_desc" : "name";
+
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+
+            var tournaments = from row in _context.Tournament select row;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                tournaments = tournaments.Where(s => s.Name.Contains(searchString)
+                                       || s.StartDate.ToString().Contains(searchString));
+            }
+            
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    tournaments = tournaments.OrderByDescending(s => s.Name).ThenBy(s => s.StartDate);
+                    break;
+                case "name":
+                    tournaments = tournaments.OrderBy(s => s.Name).ThenBy(s => s.StartDate);
+                    break;
+                case "date_desc":
+                    tournaments = tournaments.OrderByDescending(s => s.StartDate).ThenBy(s => s.Name);
+                    break;
+                default:
+                    tournaments = tournaments.OrderBy(s => s.StartDate).ThenBy(s => s.Name); ;
+                    break;
+            }
+
+            int pageSize = 10;
+            return View(await PaginatedList<Tournament>.CreateAsync(tournaments.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Tournaments/Details/5
