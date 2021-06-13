@@ -205,4 +205,5 @@ C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Tourna
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\TournamentsWebApp.csproj.AssemblyReference.cache
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\bin\Debug\net5.0\Geocoding.Core.dll
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\bin\Debug\net5.0\Geocoding.Google.dll
-C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Tournaments\Register.cshtml.g.cs
+C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\TournamentEnrollments\Create.cshtml.g.cs
+C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\TournamentEnrollments\Delete.cshtml.g.cs

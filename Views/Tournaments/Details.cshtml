@@ -10,7 +10,7 @@
 
 <h1> "@Model.Name" Tournament Details  </h1> 
 
-<h3> <a asp-action="Register" asp-route-id="@Model.ID"> Register</a> </h3>
+<h3> <a asp-controller="TournamentEnrollments" asp-action="Create" asp-route-id="@Model.ID"> Register</a> </h3>
 
     <fieldset>
         <legend style="font-family: 'Segoe UI'; color: rgb(73,171,210); font-size: large;">Tournament location:</legend>
