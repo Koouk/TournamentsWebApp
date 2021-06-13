@@ -20,18 +20,7 @@ namespace TournamentsWebApp.Models
                     return;   // DB has been seeded
                 }
 
-                context.Tournament.AddRange(
-                    new Tournament
-                    {
-                        Name = "When Harry Met Sally",
-                        StartDate = DateTime.Parse("1989-2-12"),
-                        Deadline  = DateTime.Parse("1989-4-12"),
-                        localization = "Poznan ul koszewskiego 5",
-                        maxPart = 10
-
-                    }
-                  
-                );
+             
                 context.SaveChanges();
             }
         }

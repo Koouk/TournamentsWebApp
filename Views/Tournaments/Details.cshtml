@@ -5,7 +5,35 @@
 }
 
 <h1>Tournament Details</h1>
+<fieldset>
+    <legend style="font-family: 'Segoe UI'; color: rgb(73,171,210); font-size: large;">Tournament location:</legend>
 
+
+    <div id="googleMap" style="height:400px;width:100%;"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+
+        function myMap() {
+            var myCenter = new google.maps.LatLng(52.403440, 16.950744);
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': "@Model.localization" }, function (results, status) {
+                if (status == 'OK') {
+                    myCenter = results[0].geometry.locationl
+                    alert('Geocode was OK' );
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+
+            var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: true, mapTypeId: google.maps.MapTypeId.ROADMAP };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            var marker = new google.maps.Marker({ position: myCenter });
+            marker.setMap(map);
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkScl8QvQwXr1qdINMPHMC1tEuMx3Va34&callback=myMap"></script>
+</fieldset>
 <div>
     <hr />
     <dl class="row">

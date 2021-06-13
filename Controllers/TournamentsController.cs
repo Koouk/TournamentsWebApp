@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Geocoding;
+using Geocoding.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +17,12 @@ namespace TournamentsWebApp.Controllers
     public class TournamentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public TournamentsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly object partLock = new object();
+        public TournamentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tournaments
@@ -102,6 +108,7 @@ namespace TournamentsWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                tournament.Owner = await _userManager.GetUserAsync(User);
                 _context.Add(tournament);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -130,32 +137,39 @@ namespace TournamentsWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,StartDate,Deadline,Discipline,localization,currentPart,maxPart")] Tournament tournament)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,StartDate,Deadline,Discipline,currentPart,localization,maxPart")] Tournament tournament)
         {
             if (id != tournament.ID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var current = await _context.Tournament.FindAsync(id);
+            _context.Entry(current).State = EntityState.Detached;
+            lock (partLock)
             {
-                try
+                tournament.currentPart = current.currentPart;
+                if (ModelState.IsValid && tournament.currentPart <= tournament.maxPart)
                 {
-                    _context.Update(tournament);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TournamentExists(tournament.ID))
+                    try
                     {
-                        return NotFound();
+
+                        _context.Update(tournament);
+                        _context.SaveChanges();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!TournamentExists(tournament.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(tournament);
         }
