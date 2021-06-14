@@ -97,11 +97,24 @@ namespace TournamentsWebApp.Controllers
 
             if(tournament.isBracket)
             {
-                return View(); //view z drabinka
+                return RedirectToAction("Started",new { id }); //view z drabinka
             }
             else
                 return View(tournament);
         }
+
+
+        public async Task<IActionResult> Started(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
+            return View(tournament);
+        }
+
 
         [Authorize]
         // GET: Tournaments/Create
@@ -165,9 +178,17 @@ namespace TournamentsWebApp.Controllers
             {
                 return NotFound();
             }
+            
 
             var current = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             _context.Entry(current).State = EntityState.Detached;
+
+            if (current.isBracket == true)
+            {
+                //todo info
+                return NotFound();
+            }
+
             var userID = _userManager.GetUserId(User);
             var ownerID = current.Owner.Id;
             if (ownerID != userID)
@@ -280,7 +301,7 @@ namespace TournamentsWebApp.Controllers
             {
                 Bracket.generateBracket(_context, tournament);
                 
-                return RedirectToAction("Details", "Tournaments", id);
+                return RedirectToAction("Index", "Tournaments");
             }
                 
             else
