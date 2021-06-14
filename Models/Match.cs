@@ -10,14 +10,16 @@ namespace TournamentsWebApp.Models
 
         public int ID { get; set; }
 
-        public int positionID { get; set; }
+        public int MatchNumber { get; set; }
 
         
-        public int? nextMatchID { get; set; }
-
-        public Match? nextMatch { get; set; }
+        public int? nextMatchNumber { get; set; }
 
         public string OpponentFirstID { get; set; }
+
+        public string LicenceNumberFirst { get; set; }
+
+        public string LicenceNumberSecond { get; set; }
 
         public string OpponentSecondID { get; set; }
 

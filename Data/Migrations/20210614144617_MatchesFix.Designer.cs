@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TournamentsWebApp.Data;
 
 namespace TournamentsWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210614144617_MatchesFix")]
+    partial class MatchesFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,15 +257,6 @@ namespace TournamentsWebApp.Data.Migrations
                     b.Property<string>("FirstOpponentResult")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LicenceNumberFirst")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LicenceNumberSecond")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MatchNumber")
-                        .HasColumnType("int");
-
                     b.Property<string>("OpponentFirstID")
                         .HasColumnType("nvarchar(450)");
 
@@ -280,6 +273,9 @@ namespace TournamentsWebApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("nextMatchNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("positionID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");

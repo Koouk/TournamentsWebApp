@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -112,7 +113,24 @@ namespace TournamentsWebApp.Controllers
             }
 
             var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
-            return View(tournament);
+            var allMatches = await _context.Matches.Include(m => m.OpponentFirst).Include(m => m.OpponentSecond).Include(m => m.tournament).Where(m => m.TournamentID == id).ToListAsync();
+           
+            var userID = _userManager.GetUserId(User);
+            List<Match> userMatches = null;
+
+            if (userID != null)
+            {
+                userMatches = allMatches.Where(m => m.OpponentFirstID == userID || m.OpponentSecondID == userID).ToList();
+            }
+
+            allMatches.Reverse();
+            var model = new ViewModel
+            {
+                allMatches = allMatches,
+                userMatches = userMatches,
+                tournament = tournament
+            };
+            return View(model);
         }
 
 

@@ -24,36 +24,42 @@ namespace TournamentsWebApp.Services
 
                     var matches = new List<Match>();
 
-                    // jest n-1 meczy w single-bracket i indeks od 0
-                    for (var i = enrollments.Count - 2; i >= 0; i--)
+                    if (teams_round > 2)
                     {
-                        var tempMatch = new Match
+                        // jest n-1 meczy w single-bracket i indeks od 0
+                        for (var i = enrollments.Count - 2; i >= 0; i--)
                         {
-                            TournamentID = tournament.ID,
-                            positionID = i,
-                            nextMatchID = (i == 0) ? null : (i - 1) / 2
-                        };
-                        matches.Add(tempMatch);
-                    }
+                            var tempMatch = new Match
+                            {
+                                TournamentID = tournament.ID,
+                                MatchNumber = i,
+                                nextMatchNumber = (i == 0) ? null : (i - 1) / 2
+                            };
+                            matches.Add(tempMatch);
+                        }
 
-                    //dodawanie zawodnikow do lisci
-                    for (int i = 0, j = 0; i < enrollments.Count; i++)
-                    {
-                        if (i % 2 == 0)
+                        //dodawanie zawodnikow do lisci
+                        for (int i = 0, j = 0; i < enrollments.Count; i++)
                         {
-                            matches[j].OpponentFirst = enrollments[i].user;
-                            matches[j].OpponentFirstID = enrollments[i].ApplicationUserID;
+                            if (i % 2 == 0)
+                            {
+                                matches[j].OpponentFirst = enrollments[i].user;
+                                matches[j].OpponentFirstID = enrollments[i].ApplicationUserID;
+                                matches[j].LicenceNumberFirst = enrollments[i].LicenceNumber;
+                            }
+                            else
+                            {
+                                matches[j].OpponentSecond = enrollments[i].user;
+                                matches[j].OpponentSecondID = enrollments[i].ApplicationUserID;
+                                matches[j].LicenceNumberSecond = enrollments[i].LicenceNumber;
+                                j++;
+                            }
                         }
-                        else
+                        matches.Reverse();
+                        foreach (var i in matches)
                         {
-                            matches[j].OpponentSecond = enrollments[i].user;
-                            matches[j].OpponentSecondID = enrollments[i].ApplicationUserID;
-                            j++;
+                            _context.Add(i);
                         }
-                    }
-                    foreach (var i in matches)
-                    {
-                        _context.Add(i);
                     }
                     tournament.isBracket = true;
                     _context.Update(tournament);
