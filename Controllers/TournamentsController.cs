@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TournamentsWebApp.Data;
 using TournamentsWebApp.Models;
+using TournamentsWebApp.Services;
 
 
 namespace TournamentsWebApp.Controllers
@@ -16,7 +17,7 @@ namespace TournamentsWebApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAuthorizationService _authorizationService;
-        private static  readonly object partLock = new object();
+        
         public TournamentsController(IAuthorizationService authorizationService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _authorizationService = authorizationService;
@@ -83,12 +84,23 @@ namespace TournamentsWebApp.Controllers
             }
 
             var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
+
             if (tournament == null)
             {
                 return NotFound();
             }
 
-            return View(tournament);
+            if(tournament.StartDate < DateTime.Now && tournament.isBracket == false)
+            {
+                Bracket.generateBracket(_context, tournament);
+            }
+
+            if(tournament.isBracket)
+            {
+                return View(); //view z drabinka
+            }
+            else
+                return View(tournament);
         }
 
         [Authorize]
@@ -163,7 +175,7 @@ namespace TournamentsWebApp.Controllers
 
 
 
-            lock (partLock)
+            lock (Lock.partLock)
             {
                 tournament.currentPart = current.currentPart;
                 if (ModelState.IsValid && tournament.currentPart <= tournament.maxPart)
@@ -231,6 +243,50 @@ namespace TournamentsWebApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize]
+        public async Task<IActionResult> MyTournaments()
+        {
+            var userID = _userManager.GetUserId(User);
+
+            var tournaments = _context.Enrollments.Where(e => e.ApplicationUserID == userID).Include(e => e.tournament);
+
+            if (tournaments == null)
+            {
+                return NotFound();
+            }
+            return View(await tournaments.ToListAsync());
+        }
+
+
+
+        [Authorize]
+        public async Task<IActionResult> Close(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
+            var userID = _userManager.GetUserId(User);
+            var ownerID = tournament.Owner.Id;
+            if (ownerID == userID)
+            {
+                Bracket.generateBracket(_context, tournament);
+                return RedirectToAction(nameof(Details),id);
+            }
+                
+            else
+                return RedirectToAction(nameof(Index));
+
+        }
+
 
         private bool TournamentExists(int id)
         {

@@ -40,8 +40,10 @@ namespace TournamentsWebApp.Models
 
         [Required]
         [NumberHigherThann("currentPart")]
-        [Display(Name = "Maximum members"), Range(1, 100)]
+        [Display(Name = "Maximum members"), Range(2, 100)]
         public int maxPart { get; set; }
+
+        public bool isBracket { get; set; } = false;
 
         public ICollection<Logo> SponsorsLogos { get; set; }
      

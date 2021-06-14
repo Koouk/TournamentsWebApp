@@ -103,6 +103,7 @@
             if (user.Id == Model.Owner.Id)
             {
                 <a asp-action="Edit" asp-route-id="@Model.ID">Edit |</a>
+                <a asp-action="Close" asp-route-id="@Model.ID">Close |</a>
             }
         }
 

@@ -16,7 +16,6 @@ namespace TournamentsWebApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private static readonly object partLock = new object();
 
         public TournamentEnrollmentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -60,13 +59,16 @@ namespace TournamentsWebApp.Controllers
                     return RedirectToAction("Index", "Tournaments");
 
 
+
+
                 enrollment.ApplicationUserID = userID;
                 var canAdd = false;
-                lock (partLock)
+                lock (Lock.partLock)
                 {
                     var tournament = _context.Tournament.Include(m => m.Owner).FirstOrDefault(m => m.ID == enrollment.TournamentID);
-                    if (tournament.maxPart - tournament.currentPart > 0)
+                    if (tournament.maxPart - tournament.currentPart > 0 && tournament.Deadline >= DateTime.Now &&tournament.isBracket ==false)
                     {
+                        enrollment.tournament = tournament;
                         canAdd = true;
                         tournament.currentPart += 1;
                         _context.Update(tournament);
@@ -78,7 +80,11 @@ namespace TournamentsWebApp.Controllers
                     _context.Add(enrollment);
                     await _context.SaveChangesAsync();
                 }
-                //TODO KOMUNIKAT
+                else
+                {
+                    //TODO KOMUNIKAT
+                }
+
                 return RedirectToAction("Index", "Tournaments");
             }
 
