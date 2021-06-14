@@ -121,7 +121,8 @@
                         {
                             var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
                             @Html.DisplayFor(modelItem => toShow)
-                        }</td>
+                        }
+                    </td>
                     <td>
                         @if (item.OpponentSecond is null)
                         {
@@ -138,6 +139,55 @@
         </tbody>
     </table>
 
+    @if (User.Identity.IsAuthenticated && Model.userMatches.Count > 0)
+    {
+        <h3> Your matches:</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <p> First opponent</p>
+                    </th>
+                    <th>
+                        <p> Second Opponent</p>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.userMatches)
+                {
+                <tr>
+                    <td>
+                        @if (item.OpponentFirst is null)
+                        {
+                            <p> TBD </p>}
+                        else
+                        {
+                            var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
+                            @Html.DisplayFor(modelItem => toShow)
+                        }
+                    </td>
+                    <td>
+                        @if (item.OpponentSecond is null)
+                        {
+                            <p> TBD </p>}
+                        else
+                        {
+                            var toShow = item.OpponentSecond.FirstName + " Licence:" + item.LicenceNumberSecond;
+                            @Html.DisplayFor(modelItem => toShow)
+                        }
+
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID">Set result</a>
+
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
 
     <a asp-action="Index">Back to List</a>
 </div>
