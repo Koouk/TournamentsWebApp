@@ -28,7 +28,7 @@ namespace TournamentsWebApp.Services
                     {
                         TournamentID = tournament.ID,
                         positionID = i,
-                        nextMatchID = (i - 1) / 2
+                        nextMatchID = (i == 0)? null : (i - 1) / 2
                     };
                     matches.Add(tempMatch);
                 }

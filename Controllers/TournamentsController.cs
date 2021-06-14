@@ -279,7 +279,8 @@ namespace TournamentsWebApp.Controllers
             if (ownerID == userID)
             {
                 Bracket.generateBracket(_context, tournament);
-                return RedirectToAction(nameof(Details),id);
+                
+                return RedirectToAction("Details", "Tournaments", id);
             }
                 
             else
