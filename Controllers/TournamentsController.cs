@@ -124,12 +124,51 @@ namespace TournamentsWebApp.Controllers
             }
 
             allMatches.Reverse();
+
+
+            var bracket = new List<List<List<BracketModel>>>();
+            var round = new List<List<BracketModel>>();
+            for (var i = 0; i < allMatches.Count; i++ )
+            {
+                var b1 = new BracketModel
+                {
+                    name = allMatches[i].LicenceNumberFirst ?? "TBD",
+                    id = allMatches[i].LicenceNumberFirst ?? "TBD"
+                };
+
+                var b2 = new BracketModel
+                {
+                    name = allMatches[i].LicenceNumberSecond ?? "TBD",
+                    id = allMatches[i].LicenceNumberSecond ?? "TBD"
+                };
+                var match = new List<BracketModel> { b1, b2 };
+                round.Add(match);
+                if(  ((allMatches[i].MatchNumber + 1) & allMatches[i].MatchNumber) == 0)
+                {
+                    bracket.Add(round);
+                    round = new List<List<BracketModel>>();
+                }
+
+            }
+
+            var x = new BracketModel
+            {
+                name = allMatches.Last().WinnerID,
+                id = allMatches.Last().WinnerID
+            };
+            var dM = new List<BracketModel>() { x };
+            bracket.Add(new List<List<BracketModel>>() { dM } );
+
+
             var model = new ViewModel
             {
+                bracket = bracket,
                 allMatches = allMatches,
                 userMatches = userMatches,
                 tournament = tournament
             };
+
+
             return View(model);
         }
 

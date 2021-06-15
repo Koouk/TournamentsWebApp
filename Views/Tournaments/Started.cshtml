@@ -96,53 +96,6 @@
     </dl>
 </div>
 <div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <p> First opponent</p>
-                </th>
-                <th>
-                    <p> Second Opponent</p>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.allMatches)
-            {
-                <tr>
-                    <td>
-                        @if (item.OpponentFirst is null)
-                        {
-                            <p> TBD </p>}
-                        else
-                        {
-                            var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
-                            @Html.DisplayFor(modelItem => toShow)
-                        }
-                    </td>
-                    <td>
-                        @if (item.OpponentSecond is null)
-                        {
-                            <p> TBD </p>}
-                        else
-                        {
-                            var toShow = item.OpponentSecond.FirstName + " Licence:" + item.LicenceNumberSecond;
-                            @Html.DisplayFor(modelItem => toShow)
-                        }
-
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @if (Model.allMatches.Last().WinnerID != null)
-    {
-<h2> Winner: @Model.allMatches.Last().WinnerID</h2>
-
-    }
     @if (User.Identity.IsAuthenticated && Model.userMatches.Count > 0)
     {
         <h3> Your next matches:</h3>
@@ -196,6 +149,77 @@
             </tbody>
         </table>
     }
+
+
+
+
+    @Html.Raw(Json.Serialize(Model.bracket))
+    <!---            DRABINKA                  -->
+
+    <div class="my_gracket"></div>
+    <script type="text/javascript">
+    $(document).ready(function ($) {
+            var data = @Html.Raw(Json.Serialize(Model.bracket))
+            $(".my_gracket").gracket({
+                src: data
+            });
+
+        })
+
+    </script>
+
+
+
+    <!---            DRABINKA                  -->
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <p> First opponent</p>
+                </th>
+                <th>
+                    <p> Second Opponent</p>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.allMatches)
+            {
+                <tr>
+                    <td>
+                        @if (item.OpponentFirst is null)
+                        {
+                            <p> TBD </p>}
+                        else
+                        {
+                            var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
+                            @Html.DisplayFor(modelItem => toShow)
+                        }
+                    </td>
+                    <td>
+                        @if (item.OpponentSecond is null)
+                        {
+                            <p> TBD </p>}
+                        else
+                        {
+                            var toShow = item.OpponentSecond.FirstName + " Licence:" + item.LicenceNumberSecond;
+                            @Html.DisplayFor(modelItem => toShow)
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.allMatches.Last().WinnerID != null)
+    {
+        <h2> Winner: @Model.allMatches.Last().WinnerID</h2>
+
+    }
+
 
     <a asp-action="Index">Back to List</a>
 </div>
