@@ -41,5 +41,6 @@ namespace TournamentsWebApp.Controllers
     {
         public static readonly object partLock = new object();
         public static readonly object bracketLock = new object();
+        
     }
 }

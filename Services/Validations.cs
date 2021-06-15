@@ -77,4 +77,38 @@ namespace TournamentsWebApp.Services
 
 
 
+    public class isOneOfTwo : ValidationAttribute
+    {
+        private readonly string _comparisonProperty1;
+        private readonly string _comparisonProperty2;
+
+        public isOneOfTwo(string comparisonProperty1, string comparisonProperty2)
+        {
+            _comparisonProperty1 = comparisonProperty1;
+            _comparisonProperty2 = comparisonProperty2;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var currentValue = (string)value;
+
+            var property1 = validationContext.ObjectType.GetProperty(_comparisonProperty1);
+            var property2 = validationContext.ObjectType.GetProperty(_comparisonProperty2);
+
+            if (property1 == null || property2 ==null)
+                throw new ArgumentException("Property with this name not found");
+
+            var comparisonValue1 = (string)property1.GetValue(validationContext.ObjectInstance);
+            var comparisonValue2 = (string)property2.GetValue(validationContext.ObjectInstance);
+
+            if (currentValue != comparisonValue1 && currentValue != comparisonValue2)
+                return new ValidationResult("There is no such oponnent");
+
+            return ValidationResult.Success;
+        }
+    }
+
+
+
+
 }

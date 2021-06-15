@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using TournamentsWebApp.Services;
 
 namespace TournamentsWebApp.Models
 {
     public class Match
     {
-
         public int ID { get; set; }
 
         public int MatchNumber { get; set; }
@@ -30,13 +32,12 @@ namespace TournamentsWebApp.Models
         public int TournamentID { get; set; }
 
         public Tournament tournament { get; set; }
+        public string TemporaryResult { get; set; } = null;
 
-        public string FirstOpponentResult { get; set; } = null;
-
-        public string SecondOpponentResult { get; set; } = null;
-
+        [isOneOfTwo("LicenceNumberFirst", "LicenceNumberSecond")]
+        [Display(Name = "Winner licence")]
         public string WinnerID { get; set; } = null;
 
-
+        public bool isFinished { get; set; } = false;
     }
 }

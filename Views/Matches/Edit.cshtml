@@ -1,0 +1,38 @@
+﻿@model TournamentsWebApp.Models.Match
+
+@{
+    ViewData["Title"] = "Add result";
+}
+
+<h1>Add result</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="OpponentFirstID" />
+            <input type="hidden" asp-for="OpponentSecondID" />
+            <input type="hidden" asp-for="TournamentID" />
+            <input type="hidden" asp-for="LicenceNumberFirst" />
+            <input type="hidden" asp-for="LicenceNumberSecond" />
+            <div class="form-group">
+                <label asp-for="WinnerID" class="control-label"></label>
+                <select asp-for="WinnerID" class="form-control" asp-items="ViewBag.Players"></select>
+                <span asp-validation-for="WinnerID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Home" asp-action="Index">Back</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
