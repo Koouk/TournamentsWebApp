@@ -15,7 +15,7 @@
                     @Html.DisplayNameFor(model => model.tournament.Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Ranking)
+                    @Html.DisplayNameFor(model => model.tournament.StartDate)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.tournament.localization)
@@ -27,17 +27,21 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tournament.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tournament.StartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.tournament.localization)
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tournament.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tournament.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tournament.localization)
+                </td>
+                <td>
+                    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@item.TournamentID">Details</a>
+
+                </td>
+            </tr>
             }
         </tbody>
     </table>

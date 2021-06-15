@@ -34,6 +34,8 @@ namespace TournamentsWebApp.Models
         public Tournament tournament { get; set; }
         public string TemporaryResult { get; set; } = null;
 
+        public string lastEditor { get; set; } = null;
+
         [isOneOfTwo("LicenceNumberFirst", "LicenceNumberSecond")]
         [Display(Name = "Winner licence")]
         public string WinnerID { get; set; } = null;

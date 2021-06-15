@@ -61,6 +61,18 @@ namespace TournamentsWebApp.Controllers
                     lock(Lock.resultLock){
                         var matchMain =  _context.Matches.Find(id);
                         _context.Entry(matchMain).State = EntityState.Detached;
+
+                        if (matchMain.OpponentFirstID == null || matchMain.OpponentSecondID == null)
+                        {
+                            return RedirectToAction("Index", "Tournaments");
+                        }
+
+
+                        if (matchMain.lastEditor == userID)
+                        {
+                            return RedirectToAction("Index", "Tournaments");
+                        }
+
                         if(matchMain.isFinished == true)
                         {
                             return NotFound();
@@ -86,16 +98,19 @@ namespace TournamentsWebApp.Controllers
 
                         match.LicenceNumberFirst = matchMain.LicenceNumberFirst;
                         match.LicenceNumberSecond = matchMain.LicenceNumberSecond;
+                        match.nextMatchNumber = matchMain.nextMatchNumber;
+                        match.MatchNumber = matchMain.MatchNumber;
 
-                        if (matchMain.TemporaryResult == null || match.TemporaryResult == "-1")
+                        if (matchMain.TemporaryResult == null || matchMain.TemporaryResult == "-1")
                         {
+                            match.lastEditor = userID;
                             match.TemporaryResult = match.WinnerID;
                             match.WinnerID = null;
 
                         }
                         else
                         {
-                            if (match.TemporaryResult == match.WinnerID)
+                            if (matchMain.TemporaryResult == match.WinnerID)
                             {
 
                                 match.isFinished = true;
@@ -115,15 +130,29 @@ namespace TournamentsWebApp.Controllers
                     if(match.isFinished && match.nextMatchNumber != null)
                     {
                         var nextMatch = await _context.Matches.Include(m => m.OpponentFirst).Include(m => m.OpponentSecond).Include(m => m.tournament)
-                            .Where(m => m.TournamentID == id).Where(m => m.MatchNumber == match.nextMatchNumber).FirstOrDefaultAsync();
+                            .Where(m => m.TournamentID == match.TournamentID).Where(m => m.MatchNumber == match.nextMatchNumber).FirstOrDefaultAsync();
 
-                        if(nextMatch.OpponentFirstID == null)
+                        var licence = "";
+                        if (match.WinnerID == match.LicenceNumberFirst)
                         {
-                            nextMatch.OpponentFirstID = match.OpponentFirstID;
+                            match.WinnerID = match.OpponentFirstID;
+                            licence = match.LicenceNumberFirst;
                         }
                         else
                         {
-                            nextMatch.OpponentSecondID = match.OpponentSecondID;
+                            match.WinnerID = match.OpponentSecondID;
+                            licence = match.LicenceNumberSecond;
+                        }
+
+                        if(nextMatch.OpponentFirstID == null)
+                        {
+                            nextMatch.OpponentFirstID = match.WinnerID;
+                            nextMatch.LicenceNumberFirst = licence;
+                        }
+                        else
+                        {
+                            nextMatch.OpponentSecondID = match.WinnerID;
+                            nextMatch.LicenceNumberSecond = licence;
                         }
                         _context.Update(nextMatch);
                         await _context.SaveChangesAsync();
@@ -141,7 +170,7 @@ namespace TournamentsWebApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Tournaments");
             }
 
             var correct = await _context.Matches.FindAsync(id);

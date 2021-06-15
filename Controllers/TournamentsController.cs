@@ -120,7 +120,7 @@ namespace TournamentsWebApp.Controllers
 
             if (userID != null)
             {
-                userMatches = allMatches.Where(m => m.OpponentFirstID == userID || m.OpponentSecondID == userID).ToList();
+                userMatches = allMatches.Where(m =>( m.OpponentFirstID == userID || m.OpponentSecondID == userID )&& m.isFinished != true ).ToList();
             }
 
             allMatches.Reverse();
@@ -288,13 +288,13 @@ namespace TournamentsWebApp.Controllers
         {
             var userID = _userManager.GetUserId(User);
 
-            var tournaments = _context.Enrollments.Where(e => e.ApplicationUserID == userID).Include(e => e.tournament);
+            var enrollments = await _context.Enrollments.Where(e => e.ApplicationUserID == userID).Include(e => e.tournament).ToListAsync();
 
-            if (tournaments == null)
+            if (enrollments == null)
             {
                 return NotFound();
             }
-            return View(await tournaments.ToListAsync());
+            return View(enrollments);
         }
 
 

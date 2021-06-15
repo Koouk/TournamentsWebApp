@@ -138,10 +138,14 @@
             }
         </tbody>
     </table>
+    @if (Model.allMatches.Last().WinnerID != null)
+    {
+<h2> Winner: @Model.allMatches.Last().WinnerID</h2>
 
+    }
     @if (User.Identity.IsAuthenticated && Model.userMatches.Count > 0)
     {
-        <h3> Your matches:</h3>
+        <h3> Your next matches:</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -157,33 +161,37 @@
             <tbody>
                 @foreach (var item in Model.userMatches)
                 {
-                <tr>
-                    <td>
-                        @if (item.OpponentFirst is null)
-                        {
-                            <p> TBD </p>}
-                        else
-                        {
-                            var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
-                            @Html.DisplayFor(modelItem => toShow)
-                        }
-                    </td>
-                    <td>
-                        @if (item.OpponentSecond is null)
-                        {
-                            <p> TBD </p>}
-                        else
-                        {
-                            var toShow = item.OpponentSecond.FirstName + " Licence:" + item.LicenceNumberSecond;
-                            @Html.DisplayFor(modelItem => toShow)
-                        }
+                    <tr>
+                        <td>
+                            @if (item.OpponentFirst is null)
+                            {
+                                <p> TBD </p>}
+                            else
+                            {
+                                var toShow = item.OpponentFirst.FirstName + " Licence:" + item.LicenceNumberFirst;
+                                @Html.DisplayFor(modelItem => toShow)
+                            }
+                        </td>
+                        <td>
+                            @if (item.OpponentSecond is null)
+                            {
+                                <p> TBD </p>}
+                            else
+                            {
+                                var toShow = item.OpponentSecond.FirstName + " Licence:" + item.LicenceNumberSecond;
+                                @Html.DisplayFor(modelItem => toShow)
+                            }
 
-                    </td>
-                    <td>
-                        <a asp-controller="Matches" asp-action="Edit" asp-route-id="@item.ID">Set result</a>
+                        </td>
+                        <td>
+                            @if (item.OpponentSecondID != null && item.OpponentFirstID != null)
+                            {
+                                <a asp-controller="Matches" asp-action="Edit" asp-route-id="@item.ID">Set result</a>
+                            }
 
-                    </td>
-                </tr>
+
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
