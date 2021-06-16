@@ -123,42 +123,45 @@ namespace TournamentsWebApp.Controllers
                 userMatches = allMatches.Where(m =>( m.OpponentFirstID == userID || m.OpponentSecondID == userID )&& m.isFinished != true ).ToList();
             }
 
-            allMatches.Reverse();
-
 
             var bracket = new List<List<List<BracketModel>>>();
             var round = new List<List<BracketModel>>();
+
             for (var i = 0; i < allMatches.Count; i++ )
             {
                 var b1 = new BracketModel
                 {
                     name = allMatches[i].LicenceNumberFirst ?? "TBD",
-                    id = allMatches[i].LicenceNumberFirst ?? "TBD"
+                    id = allMatches[i].LicenceNumberFirst  
                 };
 
                 var b2 = new BracketModel
                 {
                     name = allMatches[i].LicenceNumberSecond ?? "TBD",
-                    id = allMatches[i].LicenceNumberSecond ?? "TBD"
+                    id = allMatches[i].LicenceNumberSecond 
                 };
                 var match = new List<BracketModel> { b1, b2 };
                 round.Add(match);
-                if(  ((allMatches[i].MatchNumber + 1) & allMatches[i].MatchNumber) == 0)
+                if(allMatches[i].MatchNumber != 1 && ((allMatches[i].MatchNumber - 1) & allMatches[i].MatchNumber) == 0)
                 {
                     bracket.Add(round);
                     round = new List<List<BracketModel>>();
                 }
 
             }
+            bracket.Add(round);
 
+            allMatches.Reverse();
+            bracket.Reverse();
             var x = new BracketModel
             {
-                name = allMatches.Last().WinnerID,
+                name = allMatches.Last().WinnerID ?? "TBD",
                 id = allMatches.Last().WinnerID
             };
             var dM = new List<BracketModel>() { x };
-            bracket.Add(new List<List<BracketModel>>() { dM } );
+            bracket.Add(new List<List<BracketModel>>() { dM });
 
+            
 
             var model = new ViewModel
             {
