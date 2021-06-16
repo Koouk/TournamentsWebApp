@@ -314,7 +314,7 @@ namespace TournamentsWebApp.Controllers
 
             var userID = _userManager.GetUserId(User);
             var ownerID = tournament.Owner.Id;
-            if (ownerID != userID)
+            if (ownerID != userID || tournament.isBracket == true)
                 return RedirectToAction(nameof(Index));
             _context.Tournament.Remove(tournament);
             await _context.SaveChangesAsync();
@@ -354,6 +354,11 @@ namespace TournamentsWebApp.Controllers
             var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             if (tournament == null)
             {
+                return NotFound();
+            }
+            if(tournament.currentPart < 2)
+            {
+                //nie ma sensuzamykac jak <2
                 return NotFound();
             }
 
