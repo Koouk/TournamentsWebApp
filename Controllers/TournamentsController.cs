@@ -376,6 +376,14 @@ namespace TournamentsWebApp.Controllers
 
         }
 
+        [Authorize]
+        public async Task<IActionResult> Add_sponsors(int? id)
+        {
+
+            return RedirectToAction("Create", "Logoes", new { id});
+
+        }
+
 
         private bool TournamentExists(int id)
         {

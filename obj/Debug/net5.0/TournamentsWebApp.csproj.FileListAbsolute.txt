@@ -210,3 +210,5 @@ C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Tournaments\MyTournaments.cshtml.g.cs
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Tournaments\Started.cshtml.g.cs
 C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Matches\Edit.cshtml.g.cs
+C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Tournaments\Add_sponsors.cshtml.g.cs
+C:\Users\Aleksander\Desktop\studia\PAI\TournamentsWebApp\obj\Debug\net5.0\Razor\Views\Logoes\Create.cshtml.g.cs
