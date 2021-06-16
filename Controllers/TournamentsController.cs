@@ -183,9 +183,7 @@ namespace TournamentsWebApp.Controllers
             return View();
         }
 
-        // POST: Tournaments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -226,9 +224,7 @@ namespace TournamentsWebApp.Controllers
 
         }
 
-        // POST: Tournaments1/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -330,15 +326,21 @@ namespace TournamentsWebApp.Controllers
         {
             var userID = _userManager.GetUserId(User);
 
-            var enrollments = await _context.Enrollments.Where(e => e.ApplicationUserID == userID).Include(e => e.tournament).ToListAsync();
+            var enrollmentsT = await _context.Enrollments.Where(e => e.ApplicationUserID == userID).Include(e => e.tournament).ToListAsync();
+            var matchesT = await _context.Matches.Where(m => (m.OpponentFirstID == userID || m.OpponentSecondID == userID) && m.isFinished == false).Include(e=> e.tournament).ToListAsync();
 
-            if (enrollments == null)
+            
+            var model = new MatchesTournaments();
+            model.Matches = matchesT;
+            model.Tournaments = enrollmentsT;
+
+
+            if (enrollmentsT == null)
             {
                 return NotFound();
             }
-            return View(enrollments);
+            return View(model);
         }
-
 
 
         [Authorize]

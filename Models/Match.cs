@@ -14,13 +14,13 @@ namespace TournamentsWebApp.Models
 
         public int MatchNumber { get; set; }
 
-        
+        [Display(Name = "Match ID in tournament")]
         public int? nextMatchNumber { get; set; }
 
         public string OpponentFirstID { get; set; }
-
+        [Display(Name = "First player licence")]
         public string LicenceNumberFirst { get; set; }
-
+        [Display(Name = "Second player licence")]
         public string LicenceNumberSecond { get; set; }
 
         public string OpponentSecondID { get; set; }

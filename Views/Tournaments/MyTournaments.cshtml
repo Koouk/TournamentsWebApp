@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TournamentsWebApp.Models.TournamentEnrollment>
+﻿@model TournamentsWebApp.Models.MatchesTournaments
 @using Microsoft.AspNetCore.Identity
 @using TournamentsWebApp.Models;
 @inject SignInManager<ApplicationUser> SignInManager
@@ -7,42 +7,91 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <h1>Incoming tournaments</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.tournament.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.tournament.StartDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.tournament.localization)
-                </th>
+    @if (Model.Tournaments != null)
+    {
+        <h1>Incoming tournaments</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Tournaments.Last().tournament.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Tournaments.Last().tournament.StartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Tournaments.Last().tournament.localization)
+                    </th>
 
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tournament.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tournament.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.tournament.localization)
-                </td>
-                <td>
-                    <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@item.TournamentID">Details</a>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Tournaments)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tournament.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tournament.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tournament.localization)
+                        </td>
+                        <td>
+                            <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@item.TournamentID">Details</a>
 
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (Model.Matches != null)
+    {
+        <h1>Current matches</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Matches.Last().tournament.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Matches.Last().MatchNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Matches.Last().LicenceNumberFirst)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Matches.Last().LicenceNumberSecond)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Matches)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.tournament.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MatchNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LicenceNumberFirst)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LicenceNumberSecond)
+                    </td>
+                    <td>
+                        <a asp-controller="Tournaments" asp-action="Details" asp-route-id="@item.TournamentID">Details</a>
+
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
