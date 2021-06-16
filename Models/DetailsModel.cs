@@ -5,13 +5,10 @@ using System.Threading.Tasks;
 
 namespace TournamentsWebApp.Models
 {
-    public class ViewModel
+    public class DetailsModel
     {
-        public List<List<List<BracketModel>>> bracket { get; set; }
-        public List<Match> allMatches { get; set; }
-
         public List<Logo> allLogos { get; set; }
-        public List<Match> userMatches { get; set; }
+
         public Tournament tournament { get; set; }
     }
 }

@@ -219,4 +219,15 @@
 
 
     <a asp-action="Index">Back to List</a>
+    <div> </div>
+    <h4>Sponsors: </h4>
+    <ul>
+        @foreach (var i in Model.allLogos)
+        {
+            <li>
+                <img src=@i.link style="padding:20px; max-width: auto; height: 150px">
+            </li>
+        }
+    </ul>
+
 </div>

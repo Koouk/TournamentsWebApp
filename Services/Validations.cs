@@ -21,6 +21,24 @@ namespace TournamentsWebApp.Services
 
     }
 
+    public class imageLink : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch((string)value, @"(https?:\/\/[^ ]*\.(?:gif|png|jpg|jpeg))"))
+            {
+                return new ValidationResult(ErrorMessage ?? "Invalid link (only links that ends with .gif/.jpg/.png/.jpeg are valid");
+            }
+            else
+            {
+                return ValidationResult.Success;
+            }
+        }
+
+    }
+
+
     public class DateLessThanAttribute : ValidationAttribute
     {
         private readonly string _comparisonProperty;

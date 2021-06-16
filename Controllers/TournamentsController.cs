@@ -96,12 +96,20 @@ namespace TournamentsWebApp.Controllers
                 Bracket.generateBracket(_context, tournament);
             }
 
-            if(tournament.isBracket)
+            if (tournament.isBracket)
             {
-                return RedirectToAction("Started",new { id }); //view z drabinka
+                return RedirectToAction("Started", new { id }); //view z drabinka
             }
             else
-                return View(tournament);
+            {
+                var logos = await _context.Logos.Include(m => m.tournament).Where(m => m.TournamentId == id).ToListAsync();
+                var model = new DetailsModel
+                {
+                    tournament = tournament,
+                    allLogos = logos
+                };
+                return View(model);
+            }
         }
 
 
@@ -114,7 +122,7 @@ namespace TournamentsWebApp.Controllers
 
             var tournament = await _context.Tournament.Include(m => m.Owner).FirstOrDefaultAsync(m => m.ID == id);
             var allMatches = await _context.Matches.Include(m => m.OpponentFirst).Include(m => m.OpponentSecond).Include(m => m.tournament).Where(m => m.TournamentID == id).ToListAsync();
-           
+            var logos = await _context.Logos.Include(m => m.tournament).Where(m => m.TournamentId == id).ToListAsync();
             var userID = _userManager.GetUserId(User);
             List<Match> userMatches = null;
 
@@ -168,7 +176,8 @@ namespace TournamentsWebApp.Controllers
                 bracket = bracket,
                 allMatches = allMatches,
                 userMatches = userMatches,
-                tournament = tournament
+                tournament = tournament,
+                allLogos = logos
             };
 
 

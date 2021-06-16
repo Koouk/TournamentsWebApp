@@ -1,4 +1,4 @@
-﻿@model TournamentsWebApp.Models.Tournament
+﻿@model TournamentsWebApp.Models.DetailsModel
 @using Microsoft.AspNetCore.Authorization
 @using TournamentsWebApp.Models;
 @using Microsoft.AspNetCore.Identity
@@ -8,10 +8,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h1> "@Model.Name" Tournament Details  </h1>
-@if (Model.currentPart < Model.maxPart)
+<h1> "@Model.tournament.Name" Tournament Details  </h1>
+@if (Model.tournament.currentPart < Model.tournament.maxPart)
 {
-    <h3> <a asp-controller="TournamentEnrollments" asp-action="Create" asp-route-id="@Model.ID"> Register</a> </h3>
+    <h3> <a asp-controller="TournamentEnrollments" asp-action="Create" asp-route-id="@Model.tournament.ID"> Register</a> </h3>
 }
 else
 {
@@ -26,7 +26,7 @@ else
             style="border:0"
             loading="lazy"
             allowfullscreen
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBkScl8QvQwXr1qdINMPHMC1tEuMx3Va34&q=@Model.localization">
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBkScl8QvQwXr1qdINMPHMC1tEuMx3Va34&q=@Model.tournament.localization">
     </iframe>
     <!--
     <div id="googleMap" style="height:400px;width:100%;"></div>
@@ -37,7 +37,7 @@ else
         function myMap() {
             var myCenter = new google.maps.LatLng(52.403440, 16.950744);
             var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': "@Model.localization" }, function (results, status) {
+            geocoder.geocode({ 'address': "@Model.tournament.localization" }, function (results, status) {
                 if (status == 'OK') {
                     myCenter = results[0].geometry.locationl
                     alert('Geocode was OK' );
@@ -59,46 +59,46 @@ else
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.tournament.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.tournament.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
+            @Html.DisplayNameFor(model => model.tournament.StartDate)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
+            @Html.DisplayFor(model => model.tournament.StartDate)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Deadline)
+            @Html.DisplayNameFor(model => model.tournament.Deadline)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
+            @Html.DisplayFor(model => model.tournament.Deadline)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Discipline)
+            @Html.DisplayNameFor(model => model.tournament.Discipline)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Discipline)
+            @Html.DisplayFor(model => model.tournament.Discipline)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.localization)
+            @Html.DisplayNameFor(model => model.tournament.localization)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.localization)
+            @Html.DisplayFor(model => model.tournament.localization)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.currentPart)
+            @Html.DisplayNameFor(model => model.tournament.currentPart)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.currentPart)
+            @Html.DisplayFor(model => model.tournament.currentPart)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.maxPart)
+            @Html.DisplayNameFor(model => model.tournament.maxPart)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.maxPart)
+            @Html.DisplayFor(model => model.tournament.maxPart)
         </dd>
     </dl>
 </div>
@@ -107,14 +107,26 @@ else
     @if (User.Identity.IsAuthenticated)
     {
         var user = await userManager.GetUserAsync(User);
-        if (user.Id == Model.Owner.Id)
+        if (user.Id == Model.tournament.Owner.Id)
         {
-            <a asp-action="Add_sponsors" asp-route-id="@Model.ID">Add sponsors |</a>
-            <a asp-action="Edit" asp-route-id="@Model.ID">Edit |</a>
-            <a asp-action="Close" asp-route-id="@Model.ID">Close |</a>
-            <a asp-action="Delete" asp-route-id="@Model.ID"> Delete | </a>
+            <a asp-action="Add_sponsors" asp-route-id="@Model.tournament.ID">Add sponsors |</a>
+            <a asp-action="Edit" asp-route-id="@Model.tournament.ID">Edit |</a>
+            <a asp-action="Close" asp-route-id="@Model.tournament.ID">Close |</a>
+            <a asp-action="Delete" asp-route-id="@Model.tournament.ID"> Delete | </a>
         }
     }
-
     <a asp-action="Index">Back to List</a>
-</div>
+
+    <div> </div>
+    <h4>Sponsors: </h4>
+    <ul>
+        @foreach (var i in Model.allLogos)
+        {
+        <li>
+            <img src=@i.link style="padding:20px; max-width: auto; height: 150px">
+        </li>
+            }
+    </ul>
+
+
+ </div>

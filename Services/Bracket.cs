@@ -24,7 +24,7 @@ namespace TournamentsWebApp.Services
 
                     var matches = new List<Match>();
 
-                    if (teams_round > 2)
+                    if (teams_round >= 2)
                     {
                         // jest n-1 meczy w single-bracket i indeks od 0
                         for (var i = enrollments.Count - 2; i >= 0; i--)

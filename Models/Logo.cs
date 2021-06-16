@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using TournamentsWebApp.Services;
 
 namespace TournamentsWebApp.Models
 {
@@ -15,6 +16,7 @@ namespace TournamentsWebApp.Models
 
         [Url]
         [Display(Name = "Tournament logo link")]
+        [imageLink]
         [Required]
         public string link { get; set; }
 
